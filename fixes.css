@@ -1,29 +1,101 @@
-html,body{overflow-x:hidden}
-.nav{isolation:isolate}
-.menu{position:relative;z-index:10002}
-@media(max-width:800px){
-  html.menu-lock{overflow:hidden;overscroll-behavior:none}
-  body.menu-lock{overflow:hidden;height:100dvh}
-  .nav{z-index:10000}
-  .nav.menu-open{backdrop-filter:none;background:var(--cream)}
-  .nav nav,.nav nav.open{
-    position:fixed;top:68px;right:0;bottom:0;left:0;width:100%;height:calc(100dvh - 68px);
-    min-height:0;margin:0;padding:clamp(2rem,9vh,5rem) 1.5rem;box-sizing:border-box;
-    display:flex!important;flex-direction:column;align-items:center;justify-content:flex-start;
-    gap:clamp(1.25rem,4vh,2rem);overflow-y:auto;overscroll-behavior:contain;
-    background:var(--cream);z-index:10001;transform:translate3d(100%,0,0);
-    visibility:hidden;opacity:0;pointer-events:none;
-    transition:transform .35s cubic-bezier(.77,0,.18,1),opacity .2s ease,visibility 0s linear .35s;
+/* ── Global overflow fix ── */
+html, body { overflow-x: hidden; }
+
+/* ── Nav stacking context ── */
+.nav { isolation: isolate; }
+
+@media (max-width: 800px) {
+
+  /* ── Scroll lock when menu is open ── */
+  html.menu-lock { overflow: hidden; overscroll-behavior: none; }
+  body.menu-lock  { overflow: hidden; height: 100dvh; }
+
+  /* ── Nav bar at mobile ── */
+  .nav { z-index: 10000; height: 68px; padding: 0 6vw; }
+  .nav.menu-open { backdrop-filter: none; background: var(--cream); }
+
+  /* ── Hide desktop elements ── */
+  .nav-cta { display: none !important; }
+
+  /* ── Hamburger button ── */
+  .menu {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    padding: 7px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    position: relative;
+    z-index: 10002;
   }
-  .nav nav.open{transform:translate3d(0,0,0);visibility:visible;opacity:1;pointer-events:auto;transition-delay:0s}
-  .nav nav a{display:block;position:relative;z-index:1;padding:.35rem;text-align:center;font-size:clamp(1.25rem,5vw,1.6rem);line-height:1.2;white-space:nowrap}
-  .nav nav a:after{display:none}
-  .menu{flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;padding:7px;cursor:pointer}
-  .menu-bar{display:block;width:100%;height:2px;background:var(--ink);border-radius:2px;transition:transform .25s ease,opacity .2s ease}
-  .nav.menu-open .menu-bar:nth-child(1){transform:translateY(7px) rotate(45deg)}
-  .nav.menu-open .menu-bar:nth-child(2){opacity:0}
-  .nav.menu-open .menu-bar:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-  .hero h1,h2,.section-head h2,.experience h2,.story h2,.contact h2{overflow-wrap:anywhere}
-  .hero-actions{flex-wrap:wrap}
-  .event-tag{right:1rem}
+  .menu-bar {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--ink);
+    border-radius: 2px;
+    transition: transform .25s ease, opacity .2s ease;
+  }
+  .nav.menu-open .menu-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav.menu-open .menu-bar:nth-child(2) { opacity: 0; }
+  .nav.menu-open .menu-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── Mobile nav panel — CLOSED state ── */
+  #primary-navigation {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.5rem, 4vh, 2.5rem);
+    position: fixed;
+    top: 68px; right: 0; bottom: 0; left: 0;
+    width: 100%;
+    height: calc(100dvh - 68px);
+    padding: clamp(2rem, 9vh, 5rem) 1.5rem;
+    box-sizing: border-box;
+    background: var(--cream);
+    z-index: 10001;
+    /* Hidden by default */
+    transform: translate3d(100%, 0, 0);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform .35s cubic-bezier(.77, 0, .18, 1),
+      opacity .2s ease,
+      visibility 0s linear .35s;
+  }
+
+  /* ── Mobile nav panel — OPEN state ── */
+  #primary-navigation.open {
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+
+  /* ── Nav links inside mobile panel ── */
+  #primary-navigation a {
+    display: block;
+    font-size: clamp(1.3rem, 5vw, 1.7rem);
+    letter-spacing: .1em;
+    text-align: center;
+    padding: .4rem;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  #primary-navigation a:after { display: none; }
+
+  /* ── Other mobile layout fixes ── */
+  .hero h1, h2,
+  .section-head h2, .experience h2,
+  .story h2, .contact h2 { overflow-wrap: anywhere; }
+  .hero-actions { flex-wrap: wrap; }
+  .event-tag { right: 1rem; }
+  .button { justify-content: space-between; }
 }
