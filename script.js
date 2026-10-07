@@ -1,27 +1,26 @@
-const nav=document.querySelector('.nav');
-const menuBtn=document.getElementById('menu-btn');
-const navPanel=document.querySelector('.nav nav');
+const header=document.querySelector('.nav');
+const menuButton=document.querySelector('.menu');
+const menuPanel=document.querySelector('#primary-navigation');
+const mobileQuery=window.matchMedia('(max-width: 800px)');
 
-// Sticky nav shadow on scroll
-window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40));
+function setMenu(open){
+  if(!header||!menuButton||!menuPanel)return;
+  const shouldOpen=Boolean(open&&mobileQuery.matches);
+  menuPanel.classList.toggle('open',shouldOpen);
+  header.classList.toggle('menu-open',shouldOpen);
+  document.body.classList.toggle('menu-lock',shouldOpen);
+  document.documentElement.classList.toggle('menu-lock',shouldOpen);
+  menuButton.setAttribute('aria-expanded',String(shouldOpen));
+  menuButton.setAttribute('aria-label',shouldOpen?'Chiudi menu':'Apri menu');
+}
 
-// Hamburger toggle
-menuBtn?.addEventListener('click',()=>{
-  const isOpen=navPanel.classList.toggle('open');
-  nav.classList.toggle('menu-open',isOpen);
-  menuBtn.setAttribute('aria-expanded',isOpen);
-});
+menuButton?.addEventListener('click',()=>setMenu(menuButton.getAttribute('aria-expanded')!=='true'));
+menuPanel?.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>setMenu(false)));
+document.addEventListener('keydown',event=>{if(event.key==='Escape')setMenu(false)});
+mobileQuery.addEventListener('change',()=>setMenu(false));
+window.addEventListener('scroll',()=>header?.classList.toggle('scrolled',window.scrollY>40),{passive:true});
 
-// Close menu when a nav link is clicked
-navPanel?.querySelectorAll('a').forEach(link=>{
-  link.addEventListener('click',()=>{
-    navPanel.classList.remove('open');
-    nav.classList.remove('menu-open');
-    menuBtn?.setAttribute('aria-expanded','false');
-  });
-});
-
-// Scroll reveal
-const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12});
-document.querySelectorAll('.section,.quote,.hero-visual').forEach(el=>{el.classList.add('reveal');observer.observe(el)});
-
+if('IntersectionObserver' in window){
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});
+  document.querySelectorAll('.section,.quote,.hero-visual').forEach(element=>{element.classList.add('reveal');observer.observe(element)});
+}
